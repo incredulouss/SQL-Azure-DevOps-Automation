@@ -1,0 +1,49 @@
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+- group: VCUSA-5214-AIW-SQL-Variables-dev
+
+steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.11.9'
+      addToPath: true
+
+  - script: |
+      python --version
+      python -m pip install —upgrade pip
+      pip install -r $(workingDirectory)/requirements.txt
+    displayName: 'Install application dependencies'
+
+  - script: |
+      sudo apt-get update
+      sudo apt-get install -y unixodbc unixodbc-dev
+      sudo apt-get install -y odbcinst
+      sudo apt-get install -y msodbcsql17
+      dpkg -l | grep -i odbc
+    displayName: 'Installation of ODBC Driver'
+
+  - script: |
+      cd $(workingDirectory)
+      pwd
+      python firewall_auth.py
+      sleep 30
+    displayName: 'Get Runner IP'
+
+  - script: |
+      cd $(workingDirectory)
+      pwd
+      python deployment.py
+    displayName: 'DEployment of script'
+    env:
+      AIW_database: $(AIW_database)
+      AIW_password: $(AIW_password)
+      AIW_server:   $(AIW_server)
+      AIW_username: $(AIW_username)
+      PROJECT_FOLDER: $(workingDirectory)
+      AIW_ODBC_driver: $(AIW_ODBC_driver)
