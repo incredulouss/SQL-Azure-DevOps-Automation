@@ -8,3 +8,14 @@ Following tech stack is used :
 - Python
 - Azure devOps
 - SQL
+
+
+### Steps to setup code
+
+    1. Clone the repo
+    
+    2. Upload all the sql script you want to deploy inside the sql folder
+
+    3. Open the sql-requirements.txt file inside the sql folder and update the name of the sql script you wanted to deploy. Also maintain the order in which you want to deploy
+
+    3. 
